@@ -1,7 +1,6 @@
 import socket
 from threading import Thread
 from tkinter import *
-from tkinter import font
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -76,7 +75,7 @@ class GUI:
                 if message == 'NICKNAME':
                     client.send(self.name.encode('utf-8'))
                 else:
-                    pass
+                    self.show_message(message)
             except:
                 print("An error occurred!")
                 client.close()
@@ -85,70 +84,63 @@ class GUI:
     def layout(self, name):
         self.name = name
         self.window.deiconify()
-        self.window.title("Quiz App")
-        self.window.configure(width= 470, height = 550, bg="#E6F0FA")
+        self.window.title("Chatroom")
+        self.window.configure(width=470, height=550, bg="#E6F0FA")
         self.window.resizable(width=False, height=False)
 
         self.labelHead = Label(self.window,
-                               bg = "#ADD8E6",
-                               fg = "#00008B",
-                               text = self.name,
-                               font = "Helvetica 13 bold",
-                               pady = 5)
-        
-        self.labelHead.place(relwidth = 1)
+                               bg="#ADD8E6",
+                               fg="#00008B",
+                               text=self.name,
+                               font="Helvetica 13 bold",
+                               pady=5)
+        self.labelHead.place(relwidth=1)
         
         self.line = Label(self.window,
-                          width = 450,
-                          bg = "#B0E0E6")
-        
-        self.line.place(relwidth = 1, rely = 0.07, relheight = 0.012)
+                          width=450,
+                          bg="#B0E0E6")
+        self.line.place(relwidth=1, rely=0.07, relheight=0.012)
         
         self.textCons = Text(self.window,
-                             width = 20,
-                             height = 2,
-                             bg = "#E6F0FA",
-                             fg = "#00008B",
-                             font = "Helvetica 14",
-                             padx = 5,
-                             pady = 5)
+                             width=20,
+                             height=2,
+                             bg="#E6F0FA",
+                             fg="#00008B",
+                             font="Helvetica 14",
+                             padx=5,
+                             pady=5)
+        self.textCons.place(relheight=0.745, relwidth=1, rely=0.08)
         
-        self.textCons.place(relheight = 0.745, relwidth = 1, rely = 0.08)
-        
-        self.labelBottom = Label(self.window, bg = "#B0E0E6", height = 80)
-        
-        self.labelBottom.place(relwidth = 1, rely = 0.825)
+        self.labelBottom = Label(self.window, bg="#B0E0E6", height=80)
+        self.labelBottom.place(relwidth=1, rely=0.825)
         
         self.entryMsg = Entry(self.labelBottom,
-                              bg = "#ADD8E6",
-                              fg = "#00008B",
-                              font = "Helvetica 13")
-        
-        self.entryMsg.place(relwidth = 0.74, relheight = 0.06, rely = 0.008, relx = 0.011)
-        
+                              bg="#ADD8E6",
+                              fg="#00008B",
+                              font="Helvetica 13",
+                              bd=0,
+                              highlightthickness=1,
+                              highlightbackground="#00008B",
+                              highlightcolor="#00008B")
+        self.entryMsg.place(relwidth=0.74, relheight=0.06, rely=0.008, relx=0.011)
         self.entryMsg.focus()
         
         self.buttonMsg = Button(self.labelBottom,
-                                text = "Send",
-                                font = "Helvetica 10 bold",
-                                width = 20,
-                                bg = "#87CEEB",
-                                fg = "#00008B",
-                                command = lambda: self.sendButton(self.entryMsg.get()))
-        
-        self.buttonMsg.place(relx = 0.77, rely = 0.008, relheight = 0.06, relwidth = 0.22)
+                                text="Send",
+                                font="Helvetica 10 bold",
+                                width=20,
+                                bg="#87CEEB",
+                                fg="#00008B",
+                                activebackground="#B0E0E6",
+                                activeforeground="#00008B",
+                                bd=0,
+                                command=lambda: self.sendButton(self.entryMsg.get()))
+        self.buttonMsg.place(relx=0.77, rely=0.008, relheight=0.06, relwidth=0.22)
         
         scrollbar = Scrollbar(self.textCons)
-        scrollbar.place(relheight = 1, relx = 0.974)
-        scrollbar.config(command = self.textCons.yview)
-        self.textCons.config(state = DISABLED)
-
-        self.quiz_label = Label(self.window,
-                                text="Welcome to the Quiz App!",
-                                font="Helvetica 16 bold",
-                                bg="#E6F0FA",
-                                fg="#00008B")
-        self.quiz_label.place(relx=0.2, rely=0.01, relwidth=0.6)
+        scrollbar.place(relheight=1, relx=0.974)
+        scrollbar.config(command=self.textCons.yview)
+        self.textCons.config(state=DISABLED)
 
     def sendButton(self, msg):
         self.msg = msg
@@ -157,16 +149,16 @@ class GUI:
         snd.start()
 
     def show_message(self, message):
-        self.textCons.config(state = NORMAL)
+        self.textCons.config(state=NORMAL)
         self.textCons.insert(END, message + "\n\n")
-        self.textCons.config(state = DISABLED)
+        self.textCons.config(state=DISABLED)
         self.textCons.see(END)
 
     def write(self):
         while True:
             message = f"{self.name}: {self.msg}"
             client.send(message.encode('utf-8'))
-            self.show_message(message)  
+            self.show_message(message)
             break
 
 g = GUI()
